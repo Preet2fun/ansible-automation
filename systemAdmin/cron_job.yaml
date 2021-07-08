@@ -1,0 +1,12 @@
+# Playbook to Create a Weekly YUM Update Job in Cron
+
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - cron:
+     name: "Weekly YUM Update"
+     special_time: weekly
+     job: "/usr/bin/yum update -y"
