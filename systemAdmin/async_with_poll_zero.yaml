@@ -1,0 +1,20 @@
+---
+- name: Test Playbook to test Async and Poll
+  hosts: server
+  remote_user: root
+  tasks:
+    - name: Copy the script 
+      copy: 
+        src: "longrunningscript.sh" # the file is present on the same directory
+        dest: "/tmp"
+    
+    - name: Execute the script
+      shell:
+        "chmod a+x /tmp/longrunningscript.sh &&  /tmp/longrunningscript.sh 120" # Run for 60 seconds 
+      async: 180 # Maximum allowed time in Seconds
+      poll: 0 # Polling Interval in Seconds
+      register: scrout
+
+    - name: Some Other Non Dependent task
+      shell :
+        " ls -lrt /tmp"
