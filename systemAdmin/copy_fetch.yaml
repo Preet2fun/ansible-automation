@@ -1,0 +1,21 @@
+---
+ - hosts: server
+   tasks:
+      # Copy from app01 ansible and then ansible to app02 using fetch and copy module
+
+     - name: Fetch the file from the app01 to ansible control node
+       run_once: yes
+       fetch: src=/tmp/data.txt dest=buffer/ flat=yes
+       when: "{{ inventory_hostname == 'app1' }}"
+
+     - name: Copy the file from ansible contol node to app02
+       copy: src=buffer/data.txt dest=/tmp/
+       when: "{{ inventory_hostname == 'app2' }}"
+
+
+
+# If you want to copy a file from an Ansible Control Master to remote hosts, the COPY (scp) module would be just fine
+# Ansible Fetch is to pull the files from the remote server to the control machine.
+# Ansible Synchronize is used to copy the files between remote servers (or) target hosts.  This is more like performing RSYNC with help of Ansible.
+# SSH Key based authentication must be enabled between remote hosts:wq!
+#

@@ -1,0 +1,16 @@
+---
+- name: Sync Pull task - Executed on  the Destination host "{{groups['server'][1]}}"
+  hosts: "{{groups['server'][0]}}"
+  user: root
+  tasks:   
+    - name: Copy the file from app01 to app02 using Method Pull
+      tags: sync-pull
+      synchronize:
+        src: "{{ item }}"
+        dest: "{{ item }}"
+        mode: pull
+      delegate_to: "{{groups['server'][1]}}"
+      register: syncfile
+      run_once: true
+      with_items:
+       - "/tmp/data.txt"
