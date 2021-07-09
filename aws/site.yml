@@ -1,0 +1,10 @@
+- name: Create AWS instance 
+  hosts: localhost
+  # import the secret file
+  vars_files:
+      - secrets.yml
+  remote_user: ubuntu
+  gather_facts: False
+  roles:
+      - ec2-provision
+      #- webapp

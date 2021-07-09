@@ -1,0 +1,7 @@
+Difference between import and include in ansible
+
+That means import_tasks is importing its tasks file at the very beginning of the playbook. 
+But include_tasks include its tasks file when the statement execution happens.
+Import tasks pre-processed at the time playbooks are parsed but include tasks are processed as they are encountered during the execution of the playbook
+
+https://heshandharmasena.medium.com/different-between-include-import-in-ansible-576629795516
