@@ -1,0 +1,32 @@
+---
+- name: "Ansible Delegate_to examples"
+  hosts: server
+  tasks:
+
+  - name: "Task1: start a quick webserver with NC on remote server"
+    shell: "while true; do { echo -e 'HTTP/1.1 200 OK\r\n'; echo Hello from WebServer ;  } | nc -l 8081 > /tmp/serverout.log ; done &"   
+    #Fire and Forget the job - let it run in background
+    async: 1
+    poll: 0
+
+  - name: "Task2: Enabling the port in firewall"
+    become: true
+    firewalld:
+      port: 8081/tcp
+      permanent: true
+      state: enabled
+      immediate: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: "Task3: Check the status of the remote server from localhost [Ansible master]"
+    uri:
+        url: http://{{inventory_hostname}}:8081
+        method: GET 
+        timeout: 30 
+        status_code: 200
+        return_content: yes
+    delegate_to: localhost
+    register: webresult
+
+  - name: "Task4: Printing the website output from the Task3"
+    debug: var=webresult

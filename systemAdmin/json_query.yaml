@@ -1,0 +1,32 @@
+---
+ - name: JsonQuery Playbook
+   hosts: localhost
+   tasks:
+     - name: Download JSON content play
+       uri:
+         url: https://jsonplaceholder.typicode.com/users
+         return_content: yes
+       register: jsoncontent
+
+     - name: Collecting UserName and Mobile Number info
+       no_log: True
+       set_fact:
+         phonebook: "{{phonebook|default({}) | combine ( {item.name : item.phone}) }}"
+       with_items: "{{ jsoncontent.json | json_query('[*]')}}"
+
+     - name: The Phonebook
+       debug: var=phonebook
+
+     - name: collecting business Card
+       debug: msg="{{ jsoncontent.json | json_query(jmesquery) }}"
+       vars:
+         jmesquery: "[*].{Name: name, Email: email, Phone: phone, CompanyName: company.name, WebSite: website, City: address.city}"
+
+     - name: Collecting business card info
+       #no_log: True
+       set_fact:
+         busniesscard: "{{busniesscard|default({}) | combine ( {item.name : item.website}) }}"
+       with_items: "{{ jsoncontent.json | json_query('[*]')}}"
+
+     - name: The Busniess 
+       debug: var=busniesscard
