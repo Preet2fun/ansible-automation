@@ -13,3 +13,6 @@ ec2_secret_key: afjdfadgf$fgajk5ragesfjgjsfdbtirhf
 
 for ssh into VM use below command
 ssh -i /root/.ssh/my_aws ubuntu@ec2-35-153-79-17.compute-1.amazonaws.com
+
+command for playbook run
+ansible-playbook -i hosts playbook.yaml --tag=create_ec2 --ask-vault-pass
