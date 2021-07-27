@@ -1,8 +1,8 @@
-#app ansible_host=3.12.97.206
-db ansible_host=35.153.79.17
+app ansible_host=100.25.46.179
+db ansible_host=100.26.234.23
 
 [todo]
-#app
+app
 db
 
 [todo:vars]
