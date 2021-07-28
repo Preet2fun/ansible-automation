@@ -65,3 +65,41 @@
   #4) enable security (/etc/mongod.conf) --> Restart Mongodb
   #> security:
   #>   authorization: "enabled"
+
+- name: play - rest of configuration
+  hosts: db
+  become: yes
+  tags:
+  - db-config
+  tasks:
+  - name: pip3 installed
+    package:
+      name: python3-pip
+      state: latest
+  - name: pip pymongo installed
+    pip:
+      name: pymongo
+      state: latest
+  - name: todo db user exsits
+    mongodb_user:
+      login_user: "{{ db_admin_user }}"
+      login_password: "{{ db_admin_pass }}"
+      database: admin
+      user: "{{ db_todo_user }}"
+      password: "{{ db_todo_pass }}"
+      state: present
+      roles:
+        - db: "{{ db_name_todo }}"
+          role: readWrite
+  - name: db accepts connection from anywhere
+    lineinfile:
+      path: /etc/mongod.conf
+      line: "  bindIp: 0.0.0.0"
+      regexp: '^(.*)bindIp(.*)$'
+      state: present
+    notify: mongodb is restarted
+  handlers:
+  - name: mongodb is restarted
+    service:
+      name: mongod
+      state: restarted
